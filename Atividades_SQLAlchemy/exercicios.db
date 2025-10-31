@@ -1,0 +1,43 @@
+from sqlalchemy import create_engine
+from models import Base, Usuario, Produto, Pedido, Avaliacao
+from datetime import datetime
+
+engine = create_engine("sqlite:///exercicios.db")
+
+# Cria as tabelas
+Base.metadata.create_all(engine)
+
+# Insere alguns dados de exemplo
+from sqlalchemy.orm import sessionmaker
+Session = sessionmaker(bind=engine)
+session = Session()
+
+usuarios = [
+    Usuario(nome="Ana", idade=25, ativo=True),
+    Usuario(nome="Bruno", idade=32, ativo=True),
+    Usuario(nome="Carlos", idade=17, ativo=False),
+]
+
+produtos = [
+    Produto(nome="Notebook", categoria="Eletrônicos", preco=3500.00, estoque=10),
+    Produto(nome="Camiseta", categoria="Vestuário", preco=79.90, estoque=50),
+    Produto(nome="Fone Bluetooth", categoria="Eletrônicos", preco=250.00, estoque=30),
+]
+
+pedidos = [
+    Pedido(usuario_id=1, produto_id=1, quantidade=1, data_pedido=datetime(2025, 3, 10)),
+    Pedido(usuario_id=2, produto_id=2, quantidade=3, data_pedido=datetime(2025, 4, 5)),
+    Pedido(usuario_id=1, produto_id=3, quantidade=2, data_pedido=datetime(2025, 5, 1)),
+]
+
+avaliacoes = [
+    Avaliacao(usuario_id=1, produto_id=1, nota=4.5, comentario="Ótimo produto!"),
+    Avaliacao(usuario_id=2, produto_id=2, nota=3.8, comentario="Boa qualidade."),
+    Avaliacao(usuario_id=1, produto_id=3, nota=4.0, comentario="Som nítido e bateria duradoura."),
+]
+
+session.add_all(usuarios + produtos + pedidos + avaliacoes)
+session.commit()
+session.close()
+
+print("Banco de dados 'exercicios.db' criado com sucesso!")
